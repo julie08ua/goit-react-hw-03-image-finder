@@ -1,10 +1,7 @@
 import { Component } from 'react';
-import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import { Overlay } from './Modal.styled';
 import { Modal } from './Modal.styled';
-
-const modalRoot = document.querySelector('#modal');
 
 export class ModalImg extends Component {
   handleBackDrop = event => {
@@ -28,11 +25,10 @@ export class ModalImg extends Component {
   }
 
   render() {
-    return createPortal(
+    return (
       <Overlay onClick={this.handleBackDrop}>
         <Modal>{this.props.children}</Modal>
-      </Overlay>,
-      modalRoot
+      </Overlay>
     );
   }
 }

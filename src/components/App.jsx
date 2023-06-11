@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { createPortal } from 'react-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -39,7 +40,7 @@ export class App extends Component {
 
         if (!images.length) {
           this.setState({
-            error: `Зображення ${searchValue} відсутні`,
+            error: "No images found for your request(:",
             status: 'rejected',
           });
         } else {
@@ -60,7 +61,7 @@ export class App extends Component {
 
       if (!images.length) {
         this.setState({
-          error: `No images found for your request(:`,
+          error: 'No images found for your request(:',
           status: 'rejected',
         });
       } else {
@@ -100,9 +101,11 @@ export class App extends Component {
         {appearBtnOrNot && <Button morePictures={this.addPictures} />}
 
         {showModal && (
-          <ModalImg closeModal={this.toggleModal}>
+          createPortal(
+            <ModalImg closeModal={this.toggleModal}>
             <img src={urlBig} alt={alt} />
-          </ModalImg>
+            </ModalImg>, document.body)
+          
         )}
 
         <ToastContainer autoClose={2500} />

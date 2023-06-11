@@ -1,15 +1,17 @@
-import { Watch } from 'react-loader-spinner';
+import { Radio } from 'react-loader-spinner';
+import { LoaderWrap } from './Loader.styled';
 
 export const Loader = () => {
   return (
-    <Watch
-      height="80"
-      width="80"
-      radius="40"
-      color="#3f51b5"
-      ariaLabel="watch-loading"
-      visible={true}
-      wrapperStyle={{ 'marginLeft': 'auto', 'marginRight': 'auto' }}
-    />
+    <LoaderWrap>
+      <Radio
+  visible={true}
+  height="80"
+  width="80"
+  ariaLabel="radio-loading"
+  wrapperStyle={{}}
+  wrapperClass="radio-wrapper"
+/>
+    </LoaderWrap>
   );
 };
