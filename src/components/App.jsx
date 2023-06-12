@@ -15,36 +15,37 @@ export class App extends Component {
   state = {
     searchValue: '',
     images: [],
-    totalHits: null,
     error: null,
     status: 'idle',
     showModal: false,
+    page: 1,
+    per_page: 12,
     urlBig: '',
     alt: '',
   };
 
-  receiveTextForSearch = text => {
-    this.setState({ searchValue: text });
-  };
-
   async componentDidUpdate(_, prevState) {
-    const { searchValue } = this.state;
+    const { searchValue,page } = this.state;
 
-    if (prevState.searchValue !== searchValue) {
+    if (
+      prevState.searchValue !== searchValue ||
+      prevState.page !== page
+    ) {
       this.setState({ status: 'pending' });
 
       try {
-        const data = await getImages(searchValue);
-        const images = data.hits;
-        const totalHits = data.totalHits;
+        const images = await getImages(searchValue, page);
 
-        if (!images.length) {
+        if (!images.hits.length) {
           this.setState({
             error: "No images found for your request(:",
             status: 'rejected',
           });
         } else {
-          this.setState({ images, status: 'resolved', totalHits });
+          this.setState(prevState => ({
+            images: [...prevState.images, ...images.hits],
+            status: 'resolved',
+      }));
         }
       } catch (error) {
         this.setState({ error: error.message, status: 'rejected' });
@@ -52,27 +53,16 @@ export class App extends Component {
     }
   }
 
-  addPictures = async page => {
-    const { searchValue } = this.state;
+    receiveTextForSearch = text => {
+    this.setState({ searchValue: text });
+  };
 
-    try {
-      const data = await getImages(searchValue, page);
-      const images = data.hits;
-
-      if (!images.length) {
-        this.setState({
-          error: 'No images found for your request(:',
-          status: 'rejected',
-        });
-      } else {
-        this.setState(prevState => ({
-          images: [...prevState.images, ...images],
-          status: 'resolved',
-        }));
-      }
-    } catch (error) {
-      this.setState({ error: error.message, status: 'rejected' });
-    }
+  onClickLoadMore = () => {
+    this.setState(
+      prevState => ({
+      page: prevState.page + 1,
+      })
+    );
   };
 
   openModal = e => {
@@ -85,9 +75,9 @@ export class App extends Component {
   };
 
   render() {
-    const { status, images, error, totalHits, showModal, urlBig, alt} =
+    const { status, images, error, showModal, urlBig, alt, per_page} =
       this.state;
-    const appearBtnOrNot = status === 'resolved' && totalHits > images.length;
+    const isBtnVisible = status === 'resolved' && images.length >= per_page;
 
     return (
       <AppWrap>
@@ -98,7 +88,7 @@ export class App extends Component {
           <ImageGallery images={images} onOpenModal={this.openModal} />
         )}
         {status === 'rejected' && <p>{error}</p>}
-        {appearBtnOrNot && <Button morePictures={this.addPictures} />}
+        {isBtnVisible && <Button onClick={this.onClickLoadMore} />}
 
         {showModal && (
           createPortal(
