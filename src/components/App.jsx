@@ -54,7 +54,7 @@ export class App extends Component {
   }
 
     receiveTextForSearch = text => {
-    this.setState({ searchValue: text });
+    this.setState({ searchValue: text, images: [], page: 1});
   };
 
   onClickLoadMore = () => {
