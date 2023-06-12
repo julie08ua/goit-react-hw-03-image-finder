@@ -18,7 +18,7 @@ export class Searchbar extends Component {
       return toast.warn('Please, enter a search query');
     }
     this.props.onSubmit(this.state.text); 
-    this.setState({ text: '' }); 
+    this.setState({ text: '', page: 1, images: []}); 
   };
 
   render() {
